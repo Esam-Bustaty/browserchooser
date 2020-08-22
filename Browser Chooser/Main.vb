@@ -197,6 +197,8 @@ APImissing:
 
         strShownUrl = strUrl
 
+        txtUrl.Text = strUrl
+
         If BrowserConfig.RevealUrl = True And Not String.IsNullOrEmpty(strUrl) Then
             Dim ShortenedHosts As String = "301url.com,6url.com,bit.ly,budurl.com,canurl.com,c-o.in,cli.gs,co.nr,cuttr.info,decenturl.com,dn.vc,doiop.com,dwarfurl.com,easyurl.net,elfurl.com,ff.im,fire.to,flq.us,freak.to,fype.com,gamerdna.com,gonext.org,is.gd,ix.lt,jive.to,kurl.us,lilurl.us,lnkurl.com,memurl.com,miklos.dk,miny.info,myurl.in,nanoref.com,notlong.com,ow.ly,pic.gd,piurl.com,plexp.com,qicute.com,qurlyq.com,readthisurl.com,redir.fr,redirx.com,shorl.com,shorterlink.com,shortlinks.co.uk,shorturl.com,shout.to,shrinkurl.us,shurl.net,simurl.com,smarturl.eu,snipurl.com,snurl.com,starturl.com,surl.co.uk,thurly.net,tighturl.com,tinylink.com,tinypic.com,tinyurl.com,traceurl.com,tr.im,tumblr.com,twurl.nl,url9.com,urlcut.com,urlcutter.com,urlhawk.com,urlpass.com,url-press.com,urlsmash.com,urlsn.com,urltea.com,url.ly,urly.local,yuarel.com,x.se,xaddr.com,xil.in,xrl.us,yatuc.com,yep.it,yweb.com"
             Dim uri As UriBuilder = New UriBuilder(strUrl)
@@ -241,7 +243,7 @@ APImissing:
         Me.Text = "About"
     End Sub
 
-    Private Sub btnInfo_MouseLeave(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnInfo.MouseLeave, btnOptions.MouseLeave
+    Private Sub btnInfo_MouseLeave(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnInfo.MouseLeave, btnOptions.MouseLeave, btnCopy.MouseLeave
         If BrowserConfig.ShowUrl = True And Not String.IsNullOrEmpty(strUrl) Then
             Me.Text = DefaultMessage & " - " & strShownUrl
         Else
@@ -411,6 +413,8 @@ APImissing:
             LaunchBrowserAndClose(4, bClose)
         ElseIf BrowserConfig.GetBrowser(5).IsActive = True AndAlso (e.KeyCode = Keys.D5 Or BrowserConfig.GetBrowser(5).Name.StartsWith(firstChar, StringComparison.InvariantCultureIgnoreCase)) Then
             LaunchBrowserAndClose(5, bClose)
+        ElseIf e.KeyCode = Keys.C And My.Computer.Keyboard.CtrlKeyDown And My.Computer.Keyboard.ShiftKeyDown Then
+            CopyToClipboardAndClose()
         End If
     End Sub
 
@@ -441,8 +445,14 @@ APImissing:
     End Sub
 
     Private Sub CopyUrlToClipboardToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles CopyUrlToClipboardToolStripMenuItem.Click
+        CopyToClipboard()
+    End Sub
+
+    Private Shared Sub CopyToClipboard()
         If Not String.IsNullOrEmpty(strUrl) Then
             My.Computer.Clipboard.SetText(strUrl)
+        Else
+            My.Computer.Clipboard.Clear()
         End If
     End Sub
 
@@ -476,5 +486,20 @@ APImissing:
 
     Private Sub frmMain_Shown(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Shown
         AddJumpLists()
+    End Sub
+
+    Private Sub btnCopy_Click(sender As Object, e As EventArgs) Handles btnCopy.Click
+        CopyToClipboardAndClose()
+    End Sub
+
+    Private Sub btnCopy_MouseEnter(sender As Object, e As EventArgs) Handles btnCopy.MouseEnter, btnCopy.MouseHover
+        Me.Text = "Copy URL to clipboard and close (Ctrl + Shift + C)"
+    End Sub
+
+    Private Sub CopyToClipboardAndClose()
+
+        CopyToClipboard()
+
+        Close()
     End Sub
 End Class

@@ -184,6 +184,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\CopyIcon.png" />
     <None Include="Resources\edge.png" />
     <None Include="Resources\Internet Explorer InPrivate.png" />
     <None Include="Settings-icon.png" />
